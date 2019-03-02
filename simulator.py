@@ -44,6 +44,8 @@ rate = 30
 run = True
 
 while(run):
+clock.tick(rate)
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
