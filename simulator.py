@@ -1,12 +1,18 @@
 import pygame
 import math
 import time
-
+import sys
 
 class creature(object):
     def __init__(self):
 
         self.id = id
+
+
+        def draw(self,win): #takes window as arg
+
+            pass
+
 
 class carnivore(creature):
     def __init__(self):
@@ -23,3 +29,7 @@ class tile(object):
 
     def __init__(self,num):
         self.num = num
+
+
+
+if __name__ == "__main__":
