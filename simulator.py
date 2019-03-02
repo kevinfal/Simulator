@@ -3,6 +3,12 @@ import math
 import time
 import sys
 
+pygame.init()
+
+#window stuff
+win = pygame.display.set_mode((600, 600))
+
+
 class creature(object):
     def __init__(self):
 
@@ -31,5 +37,15 @@ class tile(object):
         self.num = num
 
 
+#tick rate
+rate = 30
 
-if __name__ == "__main__":
+
+run = True
+
+while(run):
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            #this is so you can actually close the window
+            run = False #breaks loop
