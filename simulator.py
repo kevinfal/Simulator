@@ -1,4 +1,16 @@
+import pygame
+import math
+import time
 
 
-if __name__ == '__main__':
-    print(3)
+class creature(object):
+    def __init__(self):
+        self.health = 100
+
+
+class tile(object):
+    def __init__(self):
+        self.id = 0
+
+    def __init__(self,num):
+        self.num = num
