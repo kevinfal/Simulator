@@ -25,7 +25,7 @@ class creature(object):
 
     def move():
         #move function
-
+        pass
     def draw(self,color): #takes window as arg
         if(self.alive):
             pygame.draw.circle(win,self.color,(50,50),20,20)#
@@ -55,9 +55,13 @@ class tile(object):
     def draw(self):
         pygame.draw.rect(win, (100, self.nutrivalue, 0), (self.x, self.y, self.size, self.size))
 
-    def getpos(clickx,clicky):
-        if(( clickx >= self.x and clickx <= self.x+size ) and ( clicky >= self.y and clicky <= self.y+size )):
-            return "works"
+    def getpos(self,clicks):
+
+        clickx = clicks[0]
+        clicky = clicks[1]
+
+        if(( clickx >= self.x and clickx <= self.x+self.size ) and ( clicky >= self.y and clicky <= self.y+self.size )):
+            return True
 
 #tick rate
 rate = 30
@@ -67,6 +71,9 @@ run = True
 
 world = []
 map = []
+
+
+
 
 def initWorld():
 
@@ -108,7 +115,10 @@ while(run):
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             for x in map:
-                print(x.getpos(pos))
+                if(x.getpos(pos)):
+                    print(x.nutrivalue)
+
+
 
 
         if event.type == pygame.QUIT:
