@@ -5,7 +5,16 @@ import time
 
 class creature(object):
     def __init__(self):
-        self.health = 100
+
+        self.id = id
+
+class carnivore(creature):
+    def __init__(self):
+        pass
+
+class omnivore(creature):
+    def __init__(self):
+        pass
 
 
 class tile(object):
