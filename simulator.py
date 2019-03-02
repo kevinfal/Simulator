@@ -28,10 +28,14 @@ class omnivore(creature):
     def __init__(self):
         pass
 
+class herbivore()
 
 class tile(object):
     def __init__(self):
         self.id = 0
+        nutriValue = 0
+
+
 
     def __init__(self,num):
         self.num = num
@@ -42,6 +46,9 @@ rate = 30
 
 
 run = True
+
+def redrawGameWindow():
+    pygame.display.update() #updates window
 
 while(run):
 clock.tick(rate)
