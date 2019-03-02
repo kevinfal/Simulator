@@ -12,16 +12,21 @@ win = pygame.display.set_mode((width, height))
 
 
 class creature(object):
+
+
+
     def __init__(self):
         self.alive = True
         self.id = 0
         self.color = (0,0,255)
         self.x = 0
         self.y = 0
+        self.facing = random.randint(0,360)
 
     def draw(self,color): #takes window as arg
         if(self.alive):
             pygame.draw.circle(win,self.color,(50,50),40,40)#
+
 
 
 
@@ -44,7 +49,7 @@ class tile(object):
         self.y = y
         self.nutrivalue = 0
 
-    def draw(self, win):
+    def draw(self):
         pygame.draw.rect(win, (100, self.nutrivalue, 0), (self.x, self.y, self.size, self.size))
 
 #tick rate
@@ -64,13 +69,14 @@ def initWorld():
 
             newTile = tile(x,y)
             newTile.nutrivalue = random.randint(0,255)
-            newTile.draw(win)
+            newTile.draw()
 
             map.append(newTile)
             world.append(newTile)
             x += 21
         y += 21
 
+initWorld()
 
 def redrawGameWindow():
 
