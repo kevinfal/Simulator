@@ -2,20 +2,26 @@ import pygame
 import math
 import time
 import sys
-
+import random
 pygame.init()
 
 #window stuff
-win = pygame.display.set_mode((600, 600))
+width = 600
+height = 600
+win = pygame.display.set_mode((width, height))
 
 
 class creature(object):
     def __init__(self):
-
-        self.id = id
+        self.alive = True
+        self.id = 0
         self.color = (0,0,255)
+        self.x = 0
+        self.y = 0
+
     def draw(self,color): #takes window as arg
-        pygame.draw.circle(win,self.color,(50,50),40,40)#
+        if(self.alive):
+            pygame.draw.circle(win,self.color,(50,50),40,40)#
 
 
 
@@ -31,15 +37,15 @@ class herbivore(creature):
     def __init__(self):
         pass
 class tile(object):
-    def __init__(self):
+    def __init__(self,x,y):
         self.id = 0
-        nutriValue = 0
+        self.size = 20
+        self.x = x
+        self.y = y
+        self.nutrivalue = 0
 
-
-
-    def __init__(self,num):
-        self.num = num
-
+    def draw(self, win):
+        pygame.draw.rect(win, (100, self.nutrivalue, 0), (self.x, self.y, self.size, self.size))
 
 #tick rate
 rate = 30
@@ -47,12 +53,35 @@ clock = pygame.time.Clock()
 
 run = True
 
+world = []
+map = []
+
+def initWorld():
+
+
+    for y in range(0,height):
+        for x in range(0,width):
+
+            newTile = tile(x,y)
+            newTile.nutrivalue = random.randint(0,255)
+            newTile.draw(win)
+
+            map.append(newTile)
+            world.append(newTile)
+            x += 21
+        y += 21
+
+
 def redrawGameWindow():
+
+    for x in world:
+        x.draw()
     pygame.display.update() #updates window
 
 
 
 c0 = creature()
+
 
 
 while(run):
@@ -68,5 +97,4 @@ while(run):
             run = False #breaks loop
 
 
-    c0.draw((0,0,255))
     redrawGameWindow()
