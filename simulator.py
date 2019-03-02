@@ -13,11 +13,10 @@ class creature(object):
     def __init__(self):
 
         self.id = id
+        self.color = (0,0,255)
+    def draw(self,color): #takes window as arg
+        pygame.draw.circle(win,self.color,(50,50),40,40)#
 
-
-        def draw(self,win): #takes window as arg
-
-            pass
 
 
 class carnivore(creature):
@@ -28,8 +27,9 @@ class omnivore(creature):
     def __init__(self):
         pass
 
-class herbivore()
-
+class herbivore(creature):
+    def __init__(self):
+        pass
 class tile(object):
     def __init__(self):
         self.id = 0
@@ -43,18 +43,30 @@ class tile(object):
 
 #tick rate
 rate = 30
-
+clock = pygame.time.Clock()
 
 run = True
 
 def redrawGameWindow():
     pygame.display.update() #updates window
 
+
+
+c0 = creature()
+
+
 while(run):
-clock.tick(rate)
+
+
+
+    clock.tick(rate)
 
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             #this is so you can actually close the window
             run = False #breaks loop
+
+
+    c0.draw((0,0,255))
+    redrawGameWindow()
