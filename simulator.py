@@ -23,15 +23,31 @@ class creature(object):
         self.x = random.randint(50, 950)
         self.y = random.randint(50,750)
         self.facing = random.randint(0,360)
+    #eating function
+    def eat(self):
 
+        currentTile = onTile((self.x,self.y))
+
+        
+        #if the current tile exists
+        if currentTile != -1:
+
+            nutrivalue = currentTile.nutrivalue
+            currentTile.nutrivalue -=50
+            if currentTile.nutrivalue < 0:
+                currentTile.nutrivalue = 0
+        
+        
+
+    
     def move(self):
         speed = 20 #increase this variable slows the character down
 
         #random
         
         chance = random.randint(0,100)
-        print(self.facing)
-        #70% chance to move
+       
+        
         if self.x in range(50,width-50) and self.y in range(50,height-50):
             
 
@@ -79,9 +95,20 @@ class creature(object):
                 self.y += (self.facing)/speed
             self.x = int(self.x)
             self.y = int(self.y)
+        
+    #the creature's decision tree
+    def choice(self):
 
-    def draw(self): #takes window as arg
+        chance = random.randint(0,100)
+        if chance >= 50:
+            self.eat()
+        else:
+            self.move()
+    
+    #draws the creature onto the screen
+    def draw(self):
         if(self.alive):
+            self.choice()
             pygame.draw.circle(win,self.color,(self.x,self.y),10,10)#
 
 
@@ -117,6 +144,26 @@ class tile(object):
         if(( clickx >= self.x and clickx <= self.x+self.size ) and ( clicky >= self.y and clicky <= self.y+self.size )):
             return True
 
+
+#utility functions
+
+
+def onTile(pos):#accepts tuple as argument, returns tile
+    posx = pos[0]
+    posy = pos[1]
+
+    tile = -1
+
+    for x in map:#loops through all of the tiles in the map
+        if(x.getpos(pos)):#if the click is on a tile
+            tile = x
+
+    return tile
+
+    
+
+
+
 #tick rate
 rate = 30
 clock = pygame.time.Clock()
@@ -125,13 +172,15 @@ run = True
 
 world = []
 map = []
-
+organisms = []
+creatures = []
 
 
 
 def initWorld():
 
 
+    #generates the tile map
     for y in range(0,height):
         for x in range(0,width):
             if (x%31==0 and y%31==0):
@@ -141,6 +190,14 @@ def initWorld():
 
                 map.append(newTile)
                 world.append(newTile)
+    
+    for i in range(0,5):
+        newCreature = creature()
+        creature.x = random.randint(50,width-50)
+        creature.y = random.randint(50,height-50)
+        creatures.append(newCreature)
+        world.append(newCreature)
+        organisms.append(newCreature)
 
 
 
@@ -151,8 +208,6 @@ def redrawGameWindow():
     for x in world:
         x.draw()
 
-    c0.draw()
-    c0.move()
     pygame.display.update() #updates window
 
     
@@ -172,9 +227,9 @@ while(run):
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            for x in map:
-                if(x.getpos(pos)):
-                    print(x.nutrivalue)
+            for x in map:#loops through all of the tiles in the map
+                if(x.getpos(pos)):#if the click is on a tile
+                    print(x.nutrivalue)#print the tile's nutritional value
 
 
 
