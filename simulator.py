@@ -10,6 +10,7 @@ width = 1000
 height = 800
 win = pygame.display.set_mode((width, height))
 
+#bounds
 
 class creature(object):
 
@@ -19,16 +20,69 @@ class creature(object):
         self.alive = True
         self.id = 0
         self.color = (0,0,255)
-        self.x = 0
-        self.y = 0
+        self.x = random.randint(50, 950)
+        self.y = random.randint(50,750)
         self.facing = random.randint(0,360)
 
-    def move():
-        #move function
-        pass
-    def draw(self,color): #takes window as arg
+    def move(self):
+        speed = 20 #increase this variable slows the character down
+
+        #random
+        
+        chance = random.randint(0,100)
+        print(self.facing)
+        #70% chance to move
+        if self.x in range(50,width-50) and self.y in range(50,height-50):
+            
+
+            
+            self.facing += random.randrange(-5, 5)
+            if (self.facing > 360):
+                self.facing -= 360
+            if (self.facing < 0):
+                self.facing += 360
+
+            if (self.facing > 270):
+                self.x += (self.facing - 270)/speed
+                self.y += (self.facing - 360)/speed
+            elif (self.facing > 180):
+                self.x += (self.facing - 270)/speed
+                self.y += (180 - self.facing)/speed
+            elif (self.facing > 90):
+                self.x += (90 - self.facing)/speed
+                self.y += (180 - self.facing)/speed
+            else:
+                self.x += (90 - self.facing)/speed
+                self.y += (self.facing)/speed
+            self.x = int(self.x)
+            self.y = int(self.y)
+            
+        else:
+            self.facing = abs(self.facing - 180)
+            self.facing += random.randrange(-5, 5)
+            if (self.facing > 360):
+                self.facing -= 360
+            if (self.facing < 0):
+                self.facing += 360
+
+            if (self.facing > 270):
+                self.x += (self.facing - 270)/speed
+                self.y += (self.facing - 360)/speed
+            elif (self.facing > 180):
+                self.x += (self.facing - 270)/speed
+                self.y += (180 - self.facing)/speed
+            elif (self.facing > 90):
+                self.x += (90 - self.facing)/speed
+                self.y += (180 - self.facing)/speed
+            else:
+                self.x += (90 - self.facing)/speed
+                self.y += (self.facing)/speed
+            self.x = int(self.x)
+            self.y = int(self.y)
+
+    def draw(self): #takes window as arg
         if(self.alive):
-            pygame.draw.circle(win,self.color,(50,50),20,20)#
+            pygame.draw.circle(win,self.color,(self.x,self.y),10,10)#
 
 
 
@@ -96,8 +150,12 @@ def redrawGameWindow():
 
     for x in world:
         x.draw()
+
+    c0.draw()
+    c0.move()
     pygame.display.update() #updates window
 
+    
 
 
 c0 = creature()
