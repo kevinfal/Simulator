@@ -23,6 +23,8 @@ class creature(object):
         self.x = random.randint(50, 950)
         self.y = random.randint(50,750)
         self.facing = random.randint(0,360)
+        self.speed = 20
+        
     #eating function
     def eat(self):
 
@@ -95,7 +97,17 @@ class creature(object):
                 self.y += (self.facing)/speed
             self.x = int(self.x)
             self.y = int(self.y)
+            
         
+
+    #draws a creature's eyes
+    def drawEye(self,eyeX,eyeY):
+        
+        eyeColor = (255,0,100)
+
+        pygame.draw.circle(win,eyeColor,(eyeX,eyeY),2,2)
+
+
     #the creature's decision tree
     def choice(self):
 
@@ -107,9 +119,13 @@ class creature(object):
     
     #draws the creature onto the screen
     def draw(self):
+        
         if(self.alive):
+
+            
             self.choice()
-            pygame.draw.circle(win,self.color,(self.x,self.y),10,10)#
+            pygame.draw.circle(win,self.color,(self.x,self.y),10,10)# draws the actual creature itself
+            self.drawEye(self.x,self.y)
 
 
 
@@ -207,6 +223,7 @@ def redrawGameWindow():
 
     for x in world:
         x.draw()
+
 
     pygame.display.update() #updates window
 
