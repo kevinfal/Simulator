@@ -35,10 +35,11 @@ boundYMax = 500
 debug = ""
 debugging = False
 
+#status only changes after clicking
+#this is the text displayed after clicking something
 status = ""
 
 class creature(object):
-
 
 
     def __init__(self):
