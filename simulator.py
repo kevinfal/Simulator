@@ -16,6 +16,7 @@ font = pygame.font.SysFont('times new roman', 30, True)
 windowWidth = 1500
 windowHeight = 700
 win = pygame.display.set_mode((windowWidth , windowHeight))
+  
 
 #bounds
 tileSize = 30
@@ -42,6 +43,8 @@ status = ""
 
 #pause bool
 pause = False
+
+
 class creature(object):
 
 
@@ -75,7 +78,7 @@ class creature(object):
         clickx = clicks[0]
         clicky = clicks[1]
 
-        if(( clickx >= self.x and clickx <= self.x+ self.size ) and ( clicky >= self.y and clicky <= self.y + self.size )):
+        if(( clickx >= self.x - self.size and clickx <= self.x+ self.size ) and ( clicky >= self.y -10 and clicky <= self.y + self.size )):
             return True
 
     def move(self):
@@ -272,6 +275,9 @@ class mainBox(textBox):
         self.x = windowWidth - (self.width + 25) # to just place it in the reference of the window width
         self.y = 50
         self.mainText = text((self.x,self.y) ,"Status: " + status)
+        self.components = []
+
+
     def draw(self):
 
         self.mainText = text((self.x,self.y) ,"Status: " + status)
@@ -357,6 +363,8 @@ initWorld()
 
 def redrawGameWindow():
 
+    #draw bg
+    pygame.draw.rect(win,(0,0,0), (0, 0,windowWidth , windowHeight))
     
     for x in world:
         x.draw()
@@ -400,6 +408,7 @@ while(run):
             for x in organisms:
                 if x.getpos(pos):
                     status = "Creature: " + str(x.id)
+
             redrawGameWindow()
 
 
