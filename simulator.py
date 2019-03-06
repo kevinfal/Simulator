@@ -7,6 +7,7 @@ pygame.init()
 pygame.font.init()
 
 
+
 #font
 font = pygame.font.SysFont('times new roman', 30, True)
 
@@ -39,6 +40,8 @@ debugging = False
 #this is the text displayed after clicking something
 status = ""
 
+#pause bool
+pause = False
 class creature(object):
 
 
@@ -50,6 +53,7 @@ class creature(object):
         self.y = random.randint(50,750)
         self.facing = random.randint(0,360)
         self.speed = 20
+        self.size = 10 #radius/width
 
         
     #eating function
@@ -65,12 +69,17 @@ class creature(object):
             currentTile.nutrivalue -=50
             if currentTile.nutrivalue < 0:
                 currentTile.nutrivalue = 0
-        
-        
 
-    
+    def getpos(self,clicks):
+
+        clickx = clicks[0]
+        clicky = clicks[1]
+
+        if(( clickx >= self.x and clickx <= self.x+ self.size ) and ( clicky >= self.y and clicky <= self.y + self.size )):
+            return True
+
     def move(self):
-        speed = 10 #increase this variable slows the character down
+        speed = 8 #increase this variable slows the character down
        
         
         #if the creature is in these bounds
@@ -156,7 +165,7 @@ class creature(object):
     def choice(self):
 
         chance = random.randint(0,100)
-        if chance == 50:
+        if chance >= 50:
             self.eat()
         else:
             self.move()
@@ -166,8 +175,11 @@ class creature(object):
         
         if(self.alive):
 
-            
-            self.choice()
+            #if the game is paused, don't move
+            if(not pause):
+                self.choice()
+
+
             pygame.draw.circle(win,self.color,(self.x,self.y),10,10)# draws the actual creature itself
             self.drawEye(self.x,self.y)
 
@@ -327,6 +339,7 @@ def initWorld():
     #generates creatures
     for i in range(0,5):
         newCreature = creature()
+        newCreature.id = i
         creature.x = random.randint(boundXMin,boundXMax)
         creature.y = random.randint(boundYMin,boundYMax)
 
@@ -364,8 +377,13 @@ def redrawGameWindow():
 while(run):
 
 
+    #gets keys pressed
+    keys = pygame.key.get_pressed()
 
-    clock.tick(rate)
+    #ticks if not paused
+    if(not pause):
+        clock.tick(rate)
+        
 
 
     for event in pygame.event.get():
@@ -378,10 +396,20 @@ while(run):
             pos = pygame.mouse.get_pos()
             for x in map:#loops through all of the tiles in the map
                 if(x.getpos(pos)):#if the click is on a tile
-                    status = "Nutrivalue: " +str(x.nutrivalue)#print the tile's nutritional value
+                    status = "Nutrivalue: " +str(x.nutrivalue)#print the tile's nutritional value\
+            for x in organisms:
+                if x.getpos(pos):
+                    status = "Creature: " + str(x.id)
+            redrawGameWindow()
+
+
 
             #end tile check
 
+        #on space press
+        if keys[pygame.K_SPACE]:
+            pause = True
+            
 
 
         #if the user clicks exit
@@ -389,6 +417,7 @@ while(run):
             #this is so you can actually close the window
             run = False #breaks loop
 
+    if not pause:
+        redrawGameWindow()
 
-
-    redrawGameWindow()
+    
