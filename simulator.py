@@ -44,6 +44,12 @@ status = ""
 #pause bool
 pause = False
 
+#image bank
+pausebtn = pygame.image.load('pause.png')
+playbtn = pygame.image.load('play.png')
+ffbtn = pygame.image.load('ff.png')
+doubleFFbtn = pygame.image.load('doubleff.png')
+
 
 class creature(object):
 
@@ -226,17 +232,17 @@ class tile(object):
 
 class textBox(object):
  
-    def __init__(self,height,width,xy):
+    def __init__(self,height,width,xy,color):
 
         
 
         self.height = height
         self.width = width
         
-        self.x = windowWidth - (self.width + 25) # to just place it in the reference of the window width
-        self.y = 50
-        self.mainText = text((500,500) ,"Status")
-        self.texts = [] #list of text that the box will display
+        self.x = self.xy[0] # to just place it in the reference of the window width
+        self.y = self.xy[1]
+        self.texts = []
+        self.color = (color[0],color[1],color[2]) #list of text that the box will display
         
 
     def draw(self):
@@ -249,8 +255,8 @@ class textBox(object):
 
         for x in self.texts:
             x.draw()
-        self.mainText.draw()
-        pygame.draw.rect(win,(255,255,255), (self.x, self.y,self.width , self.height))
+       
+        pygame.draw.rect(win,(self.color[0],self.color[1],self.color[2]), (self.x, self.y,self.width , self.height))
         
 class text():
     def __init__(self,xy,txt):
@@ -263,6 +269,17 @@ class text():
     def draw(self):
         text = font.render((self.txt), 1, (0,0,255))
         win.blit(text,(self.x,self.y))
+
+#creates button from sprite
+class button():
+    def __init__(self,xy,image):
+
+        self.xy = xy
+        self.x = xy[0]
+        self.y = xy[1]
+        self.image = image
+    def draw(self):
+        win.blit(self.image, self.xy)
     
 class mainBox(textBox):
        #this constructor is for the main text box
@@ -273,7 +290,7 @@ class mainBox(textBox):
         self.width = 520
         self.texts = [] #list of text that the box will display
         self.x = windowWidth - (self.width + 25) # to just place it in the reference of the window width
-        self.y = 50
+        self.y = 70
         self.mainText = text((self.x,self.y) ,"Status: " + status)
         self.components = []
 
@@ -326,8 +343,10 @@ map = []
 organisms = []
 creatures = []
 
-textBoxes = []
+ui = []
 
+
+#initializes everything pretty much
 def initWorld():
 
 
@@ -353,9 +372,27 @@ def initWorld():
         world.append(newCreature)
         organisms.append(newCreature)
     
+#generate ui stuff
 
+    #makes main box
     box = mainBox()
+    ui.append(box)
     world.append(box)
+    
+    play = button((951,0),playbtn) #creates pause button acts as the anchor for the buttons
+    pause = button((play.x + 64,play.y), pausebtn) #creates pause button
+    fastForward = button((pause.x + 64, play.y),ffbtn) #creates fast forward button
+    doubleFast = button((fastForward.x+64,play.y),doubleFFbtn)
+
+    
+    buttons = [play,pause,fastForward,doubleFast]
+    for x in buttons:
+        world.append(x)
+        ui.append(x)
+
+
+
+
 
 
 #creates the world
