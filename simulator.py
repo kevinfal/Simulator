@@ -45,10 +45,10 @@ status = ""
 pause = False
 
 #image bank
-pausebtn = pygame.image.load('pause.png')
-playbtn = pygame.image.load('play.png')
-ffbtn = pygame.image.load('ff.png')
-doubleFFbtn = pygame.image.load('doubleff.png')
+pausebtn = pygame.image.load('Images/pause.png')
+playbtn = pygame.image.load('Images/play.png')
+ffbtn = pygame.image.load('Images/ff.png')
+doubleFFbtn = pygame.image.load('Images/doubleff.png')
 
 
 class creature(object):
@@ -272,17 +272,67 @@ class text():
 
 #creates button from sprite
 class button():
+    '''
+    Keyword arguments:
+    xy -- coordinates in form of tuple
+    image -- python.image object, sprite
+    '''
     def __init__(self,xy,image):
 
         self.xy = xy
         self.x = xy[0]
         self.y = xy[1]
         self.image = image
+        self.size = 64
     def draw(self):
         win.blit(self.image, self.xy)
+
+    def getpos(self,clicks):
+
+        clickx = clicks[0]
+        clicky = clicks[1]
+
+        if(( clickx >= self.x and clickx <= self.x+self.size ) and ( clicky >= self.y and clicky <= self.y+self.size )):
+            return True
+
+
+#acts as a collection of buttons that control the rate (time)
+#formats it so they're all in alignment
+class timeControl():
+    '''
+    Keyword arguments:
+    anchorButton -- Button object, uses this one as anchor
+    '''
+    def __init__(self,anchorButton):
+        self.anchorButton = anchorButton
+        self.buttons = [anchorButton]
+    '''
+    Keyword arguments:
+    image -- a image object to add to the collection and creates button
+    '''
+    def add(self,image):
+        #gets the button before on the list and uses that x and y
+        addto = len(self.buttons)  - 1
+        prev = self.buttons[addto]
+
+        #creates button and appends
+        newButton = button((prev.x + 64,prev.y), image)
+        self.buttons.append(newButton)
+
+
+    #draws all of the buttons in its collection
+    def draw(self):
+        for x in self.buttons:
+            x.draw()
+            
+
+
+
+
+
     
 class mainBox(textBox):
-       #this constructor is for the main text box
+    #this constructor is for the main text box
     def __init__(self):
         
         
@@ -332,6 +382,7 @@ def onTile(pos):#accepts tuple as argument, returns tile
 
 #tick rate
 rate = 30
+originRate = rate
 clock = pygame.time.Clock()
 
 run = True
@@ -344,6 +395,20 @@ organisms = []
 creatures = []
 
 ui = []
+
+
+#makes main box
+box = mainBox()
+world.append(box)
+
+play = button((950,0),playbtn)
+control = timeControl(play)
+control.add(pausebtn)
+control.add(ffbtn)
+control.add(doubleFFbtn)
+
+ui.append(control)
+world.append(control)
 
 
 #initializes everything pretty much
@@ -371,24 +436,7 @@ def initWorld():
         creatures.append(newCreature)
         world.append(newCreature)
         organisms.append(newCreature)
-    
-#generate ui stuff
 
-    #makes main box
-    box = mainBox()
-    ui.append(box)
-    world.append(box)
-    
-    play = button((951,0),playbtn) #creates pause button acts as the anchor for the buttons
-    pause = button((play.x + 64,play.y), pausebtn) #creates pause button
-    fastForward = button((pause.x + 64, play.y),ffbtn) #creates fast forward button
-    doubleFast = button((fastForward.x+64,play.y),doubleFFbtn)
-
-    
-    buttons = [play,pause,fastForward,doubleFast]
-    for x in buttons:
-        world.append(x)
-        ui.append(x)
 
 
 
@@ -445,6 +493,22 @@ while(run):
             for x in organisms:
                 if x.getpos(pos):
                     status = "Creature: " + str(x.id)
+            
+            #time control check
+            for x in control.buttons:
+                if x.getpos(pos):
+                    if x.image == pausebtn:#if the click is on the pause button
+                        pause = True
+                    if x.image == playbtn:#if the click is on the play button
+                        rate = originRate
+                        pause = False
+                    if x.image == ffbtn:#click on fast forward button
+                        rate = originRate*2
+                    if x.image == doubleFFbtn: #click on double fast forward button
+                        rate = math.pow(originRate,2)
+
+                    
+
 
             redrawGameWindow()
 
@@ -454,9 +518,8 @@ while(run):
 
         #on space press
         if keys[pygame.K_SPACE]:
-            pause = True
+            pause = not pause
             
-
 
         #if the user clicks exit
         if event.type == pygame.QUIT:
