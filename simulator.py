@@ -64,59 +64,98 @@ class creature(object):
         self.speed = 20
         self.size = 10 #radius/width
 
-        
+
     #eating function
     def eat(self):
-
         currentTile = onTile((self.x,self.y))
-
-        
         #if the current tile exists
         if currentTile != -1:
-
             nutrivalue = currentTile.nutrivalue
             currentTile.nutrivalue -=50
             if currentTile.nutrivalue < 0:
                 currentTile.nutrivalue = 0
 
-    def getpos(self,clicks):
 
+    def getpos(self,clicks):
         clickx = clicks[0]
         clicky = clicks[1]
-
         if(( clickx >= self.x - self.size and clickx <= self.x+ self.size ) and ( clicky >= self.y -10 and clicky <= self.y + self.size )):
             return True
 
     def move(self):
         speed = 8 #increase this variable slows the character down
-       
-        
         #if the creature is in these bounds
         if self.x in range(50,width) and self.y in range(50,height):
             
 
             
             self.facing += random.randrange(-5, 5)
+
+            #checks if the direction is above 360 and fixes it
             if (self.facing > 360):
                 self.facing -= 360
+
+            #checks if the direction is negative and fixes it
             if (self.facing < 0):
                 self.facing += 360
 
+            '''     90
+                    |
+                x   |   x
+         180--------+-------0/360
+                    |
+                x   |
+                    270
+
+            '''
+
+            #if the facing is more than 270
             if (self.facing > 270):
+                    
+                #incerase x by 
+                        #-270 gets it into the first quadrant
+                        #divide it by speed to increment it
                 self.x += (self.facing - 270)/speed
                 self.y += (self.facing - 360)/speed
+
+
+                '''     90
+                        |
+                        |    
+            180--------+-------0/360
+                        |
+                    x   |
+                        270
+
+                '''
+
+            #if facing is more than 180 and less than 270
             elif (self.facing > 180):
                 self.x += (self.facing - 270)/speed
                 self.y += (180 - self.facing)/speed
+
+                '''     90
+                    x   |
+                        |    
+            180--------+-------0/360
+                        |
+                    x   |   x
+                        270
+
+                '''
+
             elif (self.facing > 90):
                 self.x += (90 - self.facing)/speed
                 self.y += (180 - self.facing)/speed
+
             else:
                 self.x += (90 - self.facing)/speed
                 self.y += (self.facing)/speed
+
             self.x = int(self.x)
             self.y = int(self.y)
             
+            #goes here if not in bounds
         else:
             #if out of bounds in x 
             if not(self.x in range(50,width)):
@@ -164,8 +203,66 @@ class creature(object):
 
     #draws a creature's eyes
     def drawEye(self,eyeX,eyeY):
-        
+        speed = 4
         eyeColor = (255,0,100)
+
+         
+
+        '''     90
+                |
+            x   |   x
+        180--------+-------0/360
+                |
+            x   |
+                270
+
+        '''
+
+        #if the facing is more than 270
+        if (self.facing > 270):
+                
+            #incerase x by 
+                    #-270 gets it into the first quadrant
+                    #divide it by speed to increment it
+            eyeX += (self.facing - 270)/speed
+            eyeY += (self.facing - 360)/speed
+
+
+            '''     90
+                    |
+                    |    
+        180--------+-------0/360
+                    |
+                x   |
+                    270
+
+            '''
+
+        #if facing is more than 180 and less than 270
+        elif (self.facing > 180):
+            eyeX += (self.facing - 270)/speed
+            eyeY += (180 - self.facing)/speed
+
+            '''     90
+                x   |
+                    |    
+        180--------+-------0/360
+                    |
+                x   |   x
+                    270
+
+            '''
+
+        elif (self.facing > 90):
+            eyeX += (90 - self.facing)/speed
+            eyeY += (180 - self.facing)/speed
+
+        else:
+            eyeX += (90 - self.facing)/speed
+            eyeY += (self.facing)/speed
+
+        eyeX = int(eyeX)
+        eyeY = int(eyeY)
 
         pygame.draw.circle(win,eyeColor,(eyeX,eyeY),2,2)
 
@@ -242,27 +339,15 @@ class textBox(object):
         self.x = self.xy[0] # to just place it in the reference of the window width
         self.y = self.xy[1]
         self.texts = []
-        self.color = (color[0],color[1],color[2]) #list of text that the box will display
-        
+        self.color = (color[0],color[1],color[2]) #list of text that the box will display      
 
     def draw(self):
-        #rect(Surface, color, Rect, width=0)
-        #Draws a rectangular shape on the Surface. The given Rect is the area of the rectangle.
-        #The width argument is the thickness to draw the outer edge. If width is zero then the rectangle will be filled
-
-        #this rectangle is the background for the text
-
-
         for x in self.texts:
             x.draw()
-       
         pygame.draw.rect(win,(self.color[0],self.color[1],self.color[2]), (self.x, self.y,self.width , self.height))
-        
+
 class text():
     def __init__(self,xy,txt):
-
-       
-        
         self.x = xy[0]
         self.y = xy[1]
         self.txt = txt
@@ -453,31 +538,27 @@ def redrawGameWindow():
     
     for x in world:
         x.draw()
-
-
     
     if debugging:
         
         debugText = font.render(debug,1,(0,0,255))
         win.blit(text, (500,500))
 
+    #things that need to update (like creature movement n stuff)
+
+
 
     pygame.display.update() #updates window
 
-
-
-
 while(run):
 
-
+    
     #gets keys pressed
     keys = pygame.key.get_pressed()
 
     #ticks if not paused
     if(not pause):
         clock.tick(rate)
-        
-
 
     for event in pygame.event.get():
 
@@ -499,21 +580,18 @@ while(run):
                 if x.getpos(pos):
                     if x.image == pausebtn:#if the click is on the pause button
                         pause = True
+
                     if x.image == playbtn:#if the click is on the play button
                         rate = originRate
                         pause = False
+
                     if x.image == ffbtn:#click on fast forward button
                         rate = originRate*2
+
                     if x.image == doubleFFbtn: #click on double fast forward button
                         rate = math.pow(originRate,2)
 
-                    
-
-
             redrawGameWindow()
-
-
-
             #end tile check
 
         #on space press
