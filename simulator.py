@@ -63,6 +63,8 @@ class creature(object):
         self.facing = random.randint(0,360)
         self.speed = 20
         self.size = 10 #radius/width
+        self.eyeX = 0
+        self.eyeY = 0
 
 
     #eating function
@@ -106,7 +108,6 @@ class creature(object):
                     |
                 x   |
                     270
-
             '''
 
             #if the facing is more than 270
@@ -126,7 +127,6 @@ class creature(object):
                         |
                     x   |
                         270
-
                 '''
 
             #if facing is more than 180 and less than 270
@@ -141,7 +141,6 @@ class creature(object):
                         |
                     x   |   x
                         270
-
                 '''
 
             elif (self.facing > 90):
@@ -215,7 +214,6 @@ class creature(object):
                 |
             x   |
                 270
-
         '''
 
         #if the facing is more than 270
@@ -235,7 +233,6 @@ class creature(object):
                     |
                 x   |
                     270
-
             '''
 
         #if facing is more than 180 and less than 270
@@ -250,7 +247,6 @@ class creature(object):
                     |
                 x   |   x
                     270
-
             '''
 
         elif (self.facing > 90):
@@ -288,6 +284,14 @@ class creature(object):
 
             pygame.draw.circle(win,self.color,(self.x,self.y),10,10)# draws the actual creature itself
             self.drawEye(self.x,self.y)
+    
+
+class eye(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+        pass
 
 
 
@@ -573,7 +577,7 @@ while(run):
                     status = "Nutrivalue: " +str(x.nutrivalue)#print the tile's nutritional value\
             for x in organisms:
                 if x.getpos(pos):
-                    status = "Creature: " + str(x.id)
+                    status = "Creature: " + str(x.id) + "\n" "Health: " +x.Health
             
             #time control check
             for x in control.buttons:
@@ -606,5 +610,3 @@ while(run):
 
     if not pause:
         redrawGameWindow()
-
-    
